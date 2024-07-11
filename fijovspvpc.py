@@ -71,12 +71,14 @@ te_pvpc=calcular_media_pvpc(mes_analisis)/1000
 te_coste_pvpc=round(te_pvpc*consumo_periodo,2)
 coste_pvpc=round((tp_coste_pvpc+te_coste_pvpc)*(1+iee)*(1+iva),2)
 # Cálculo del FIJO
-tp_margen_fijo=+tp_fijo-tp_boe
+tp_margen_fijo=+round(tp_fijo-tp_boe,2)
 tp_coste_fijo=tp_fijo*pot_con*dias_periodo/366
 te_fijo=precio_ene/100
 te_coste_fijo=round(te_fijo*consumo_periodo,2)
 coste_fijo=float(f"{round((tp_coste_fijo+te_coste_fijo)*(1+iee)*(1+iva),2):.2f}")
 # Cálculo de la diferencia PVPC menos FIJO
+sobrecoste_tp=round(tp_coste_fijo-tp_coste_pvpc,2)
+sobrecoste_tp_porc=round(100*sobrecoste_tp/tp_pvpc,2)
 dif_pvpc_fijo=round(coste_fijo-coste_pvpc,2)
 dif_pvpc_fijo_porc=round(100*dif_pvpc_fijo/coste_pvpc,2)
 
@@ -84,24 +86,30 @@ dif_pvpc_fijo_porc=round(100*dif_pvpc_fijo/coste_pvpc,2)
 col10,col11,col12=st.columns(3)
 with col10:
     # Algunos datos de salida a mostrar
-    st.subheader('Datos adicionales PVPC')
-    st.text(f'El último registro PVPC disponible es del {ultimo_registro}')
-    st.text(f'El precio medio del PVPC en 2024 es de {round(te_pvpc*100,1)}c€/kWh')
-    st.text(f'El consumo realizado es {consumo_periodo} kWh')
+    st.subheader('Datos adicionales PVPC',divider='gray')
+    col101,col102=st.columns([0.6,0.4])
+    with col101:
+        st.caption(f'El último registro PVPC disponible es del  :blue[{ultimo_registro}]')
+        st.caption(f'Dias registros 2024: :blue[{dias_periodo}]')
+        st.caption(f'El consumo realizado es :blue[{consumo_periodo}] kWh')
+        
+    with col102:
+        st.metric('Precio medio del PVPC (c€/kWh)',round(te_pvpc*100,2))
 with col11:
-    st.subheader('Datos adicionales oferta FIJO')
-    st.metric('Margen Tp (€/kW año)',tp_margen_fijo)
+    st.subheader('Datos adicionales oferta FIJO',divider='gray')
+    col111,col112=st.columns(2)
+    with col111:
+        st.metric('Margen Tp (€/kW año)',tp_margen_fijo)
+    with col112:
+        st.metric('Sobrecoste Tp (€)',sobrecoste_tp,f'{sobrecoste_tp_porc} %','inverse')
 with col12:
     # Resultados a mostrar
     st.subheader(':blue-background[Resultados]',divider='rainbow')
-    #with st.container():
-        #cola,colb=st.columns([0.3,0.7])
-        #with cola:
     col4,col5,col6=st.columns(3)
     with col4:
-                st.metric('Coste PVPC (€)',coste_pvpc)
+        st.metric('Coste PVPC (€)',coste_pvpc)
     with col5: 
-                st.metric('Coste FIJO (€)', coste_fijo)
+        st.metric('Coste FIJO (€)', coste_fijo)
     with col6:
         with st.container(border=True):
             st.metric('Sobrecoste FIJO (€)', dif_pvpc_fijo,f'{dif_pvpc_fijo_porc} %','inverse')

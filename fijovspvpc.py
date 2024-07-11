@@ -13,7 +13,7 @@ tp_margen_pvpc=3.12
 pot_con=3.0
 consumo=3000
 precio_ene=10.0
-tp_margen_fijo=20
+tp_fijo=40.0
 
 #obtenemos datos de backend
 dias_periodo=obtener_dias()
@@ -46,8 +46,8 @@ with col1:
 with col2:
     with st.form('Form2'):
         st.subheader('2.Datos del contrato a precio fijo')
-        tp_margen_fijo=st.slider('Margen potencia aplicado (€/kW año)',min_value=0,max_value=50,step=1,value=tp_margen_fijo)
-        precio_ene=st.slider('Precio fijo ofertado (c€/kWh)',min_value=5.0, max_value=20.0,step=.1,value=precio_ene)
+        tp_fijo=st.slider('Precio ofertado: término de potencia (€/kW año)',min_value=tp_boe,max_value=60.0,step=.1,value=tp_fijo)
+        precio_ene=st.slider('Precio ofertado: término de energía (c€/kWh)',min_value=5.0, max_value=30.0,step=.1,value=precio_ene)
         st.form_submit_button('Calcular coste fijo')
         
 with col3:
@@ -71,7 +71,7 @@ te_pvpc=calcular_media_pvpc(mes_analisis)/1000
 te_coste_pvpc=round(te_pvpc*consumo_periodo,2)
 coste_pvpc=round((tp_coste_pvpc+te_coste_pvpc)*(1+iee)*(1+iva),2)
 # Cálculo del FIJO
-tp_fijo=tp_boe+tp_margen_fijo
+tp_margen_fijo=+tp_fijo-tp_boe
 tp_coste_fijo=tp_fijo*pot_con*dias_periodo/366
 te_fijo=precio_ene/100
 te_coste_fijo=round(te_fijo*consumo_periodo,2)
@@ -81,14 +81,17 @@ dif_pvpc_fijo=round(coste_fijo-coste_pvpc,2)
 dif_pvpc_fijo_porc=round(100*dif_pvpc_fijo/coste_pvpc,2)
 
 ##SALIDA DE DATOS
-col10,col11=st.columns(2)
+col10,col11,col12=st.columns(3)
 with col10:
     # Algunos datos de salida a mostrar
-    st.subheader('Datos adicionales')
+    st.subheader('Datos adicionales PVPC')
     st.text(f'El último registro PVPC disponible es del {ultimo_registro}')
     st.text(f'El precio medio del PVPC en 2024 es de {round(te_pvpc*100,1)}c€/kWh')
     st.text(f'El consumo realizado es {consumo_periodo} kWh')
 with col11:
+    st.subheader('Datos adicionales oferta FIJO')
+    st.metric('Margen Tp (€/kW año)',tp_margen_fijo)
+with col12:
     # Resultados a mostrar
     st.subheader(':blue-background[Resultados]',divider='rainbow')
     #with st.container():

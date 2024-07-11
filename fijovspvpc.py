@@ -8,23 +8,24 @@ iee=0.0511
 iva=0.21
 tp_boe=26.36
 tp_margen_pvpc=3.12
+
 #Inicializamos variables
 pot_con=3.0
 consumo=3000
 precio_ene=10.0
 tp_margen_fijo=20
 
+#obtenemos datos de backend
 dias_periodo=obtener_dias()
 ultimo_registro=obtener_fecha_reg_max()
 
 
-
+#configuramos la web y cabeceza
 st.set_page_config(
     page_title="fijovspvpc",
     page_icon=":bulb:",
     layout='wide',
 )
-
 st.title('Comparador precios fijos vs PVPC')
 st.caption("Copyright by Jose Vidal :ok_hand:")
 url_apps = "https://powerappspy-josevidal.streamlit.app/"
@@ -62,6 +63,7 @@ with col3:
 
         st.form_submit_button('Enviar')  
 
+## CÁLCULOS
 # Cálculo del PVPC
 tp_pvpc=tp_boe+tp_margen_pvpc
 tp_coste_pvpc=tp_pvpc*pot_con*dias_periodo/366
@@ -78,6 +80,7 @@ coste_fijo=float(f"{round((tp_coste_fijo+te_coste_fijo)*(1+iee)*(1+iva),2):.2f}"
 dif_pvpc_fijo=round(coste_fijo-coste_pvpc,2)
 dif_pvpc_fijo_porc=round(100*dif_pvpc_fijo/coste_pvpc,2)
 
+##SALIDA DE DATOS
 col10,col11=st.columns(2)
 with col10:
     # Algunos datos de salida a mostrar
@@ -87,7 +90,7 @@ with col10:
     st.text(f'El consumo realizado es {consumo_periodo} kWh')
 with col11:
     # Resultados a mostrar
-    st.subheader('Resultados')
+    st.subheader(':blue-background[Resultados]',divider='rainbow')
     #with st.container():
         #cola,colb=st.columns([0.3,0.7])
         #with cola:
@@ -97,7 +100,8 @@ with col11:
     with col5: 
                 st.metric('Coste FIJO (€)', coste_fijo)
     with col6:
-                st.metric('Diferencia (€)', dif_pvpc_fijo,f'{dif_pvpc_fijo_porc} %','inverse')
+        with st.container(border=True):
+            st.metric('Sobrecoste FIJO (€)', dif_pvpc_fijo,f'{dif_pvpc_fijo_porc} %','inverse')
 
 
 

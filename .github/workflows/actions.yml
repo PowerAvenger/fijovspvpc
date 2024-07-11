@@ -1,0 +1,25 @@
+name: run fijovspvpc.py
+
+on:
+  schedule:
+    - cron: '55 22 * * *' # Actualiza a las 14:10 UTC todos los dias
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: execute py script # run main.py
+        run: python fijovspvpc.py

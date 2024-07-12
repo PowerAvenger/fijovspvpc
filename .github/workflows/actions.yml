@@ -2,7 +2,7 @@ name: run fijovspvpc.py
 
 on:
   schedule:
-    - cron: '* * * * *' # Actualiza a las 14:10 UTC todos los dias
+    - cron: '5 * * * *' # Actualiza a las 14:10 UTC todos los dias
   
 jobs:
   build:

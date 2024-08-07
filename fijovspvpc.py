@@ -4,7 +4,7 @@ from backend import calcular_media_pvpc,obtener_dias,obtener_fecha_reg_max
 
 #Definimos constantes
 #dias_periodo=30
-iee=0.0511
+iee=0.051127
 iva=0.21
 tp_boe=26.36
 tp_margen_pvpc=3.12
@@ -20,7 +20,7 @@ dias_periodo=obtener_dias()
 ultimo_registro=obtener_fecha_reg_max()
 
 
-#configuramos la web y cabeceza
+#configuramos la web y cabecera
 st.set_page_config(
     page_title="fijovspvpc",
     page_icon=":bulb:",
@@ -33,6 +33,17 @@ st.write("Visita mi mini-web de [PowerAPPs](%s) con un montón de utilidades." %
 url_linkedin = "https://www.linkedin.com/posts/jfvidalsierra_powerapps-activity-7216715360010461184-YhHj?utm_source=share&utm_medium=member_desktop"
 st.write("Deja tus comentarios y propuestas en mi perfil de [Linkedin](%s)" % url_linkedin)
 
+#barra lateral con herramientas opcionales
+st.sidebar.header('Herramientas adicionales')
+with st.sidebar.form('form2'):
+        st.subheader('Calcular Tp anual')
+        precio_tp_dia=st.number_input('potencia €/kW dia',min_value=0.072,max_value=0.164,step=.001, format="%f")
+        precio_tp_año=round(precio_tp_dia*366,2)
+        if precio_tp_año<tp_boe:
+            precio_tp_año=tp_boe
+        st.form_submit_button('Calcular')
+
+        st.write(f'Precio Tp anual en €/kW año = {precio_tp_año}')
 # Establecemos layout de introducción de datos
 col1,col2,col3=st.columns(3)
 with col1:
@@ -70,7 +81,7 @@ tp_coste_pvpc=tp_pvpc*pot_con*dias_periodo/366
 te_pvpc=calcular_media_pvpc(mes_analisis)/1000
 te_coste_pvpc=round(te_pvpc*consumo_periodo,2)
 coste_pvpc=round((tp_coste_pvpc+te_coste_pvpc)*(1+iee)*(1+iva),2)
-# Cálculo del FIJO
+# Cálculo del FIJO a fecha último registro
 tp_margen_fijo=+round(tp_fijo-tp_boe,2)
 tp_coste_fijo=tp_fijo*pot_con*dias_periodo/366
 te_fijo=precio_ene/100
@@ -81,6 +92,10 @@ sobrecoste_tp=round(tp_coste_fijo-tp_coste_pvpc,2)
 sobrecoste_tp_porc=round(100*sobrecoste_tp/tp_pvpc,2)
 dif_pvpc_fijo=round(coste_fijo-coste_pvpc,2)
 dif_pvpc_fijo_porc=round(100*dif_pvpc_fijo/coste_pvpc,2)
+# Cálculo del FIJO ANUAL
+tp_coste_fijo_anual=tp_fijo*pot_con
+tp_coste_pvpc_anual=tp_pvpc*pot_con
+sobrecoste_tp_anual=round(tp_coste_fijo_anual-tp_coste_pvpc_anual,2)
 
 ##SALIDA DE DATOS
 col10,col11,col12=st.columns(3)
@@ -94,14 +109,17 @@ with col10:
         st.caption(f'El consumo realizado es :blue[{consumo_periodo}] kWh')
         
     with col102:
-        st.metric('Precio medio del PVPC (c€/kWh)',round(te_pvpc*100,2))
+        st.metric('Precio medio del PVPC (c€/kWh)',round(te_pvpc*100,2),help='Precio medio del PVPC (c€/kWh)')
 with col11:
     st.subheader('Datos adicionales oferta FIJO',divider='gray')
-    col111,col112=st.columns(2)
+    col111,col112,col113=st.columns(3)
     with col111:
         st.metric('Margen Tp (€/kW año)',tp_margen_fijo)
     with col112:
         st.metric('Sobrecoste Tp (€)',sobrecoste_tp,f'{sobrecoste_tp_porc} %','inverse')
+    with col113:
+        with st.container(border=True):
+            st.metric('Sobrecoste Tp ANUAL (€)',sobrecoste_tp_anual,f'{sobrecoste_tp_porc} %','inverse')
 with col12:
     # Resultados a mostrar
     st.subheader(':blue-background[Resultados]',divider='rainbow')

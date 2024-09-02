@@ -10,12 +10,12 @@ from datetime import datetime
 
 
 # %%
-#token=globals.API_KEY
+API_KEY=st.secrets['ESIOS_API_KEY']
 
 # %%
 def download_esios_id(id,fecha_ini,fecha_fin,agrupacion):
-                       token = '496b263791ef0dcaf80b803b47b332a13b01f2c2352e018b624c7a36a0eaffc0'
-                       #token = API_KEY
+                       token = API_KEY
+                       
                        cab = dict()
                        cab ['x-api-key']= token
                        url_id = 'https://api.esios.ree.es/indicators'

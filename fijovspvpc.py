@@ -27,9 +27,10 @@ st.set_page_config(
     page_title="fijovspvpc",
     page_icon=":bulb:",
     layout='wide',
+    initial_sidebar_state='collapsed'
 )
 st.title('Comparador de precios fijos vs new PVPC 2024')
-st.caption("Copyright by Jose Vidal :ok_hand:")
+st.caption(f"Dedicado a **Fernando Sánchez Rey-Maeso** y a **Alfonso Zárate Conde** por sus contribuciones a la causa. Copyright by **Jose Vidal** :ok_hand:")
 url_apps = "https://powerappspy-josevidal.streamlit.app/"
 st.write("Visita mi mini-web de [PowerAPPs](%s) con un montón de utilidades." % url_apps)
 url_linkedin = "https://www.linkedin.com/posts/jfvidalsierra_powerapps-activity-7216715360010461184-YhHj?utm_source=share&utm_medium=member_desktop"
@@ -191,7 +192,7 @@ with col10:
 
 with col11:
     st.subheader('Datos adicionales oferta FIJO',divider='gray')
-    st.markdown(f':blue-background[Obtén información del sobrecoste del término de potencia]',help='Sobrecoste con respecto al margen regulado del PVPC')
+    st.markdown(f':blue-background[Obtén información del sobrecoste del término de potencia. Sección **Fernando Sánchez Rey-Maeso**]',help='Sobrecoste con respecto al margen regulado del PVPC')
 
     col111,col112,col113=st.columns(3)
     with col111:
@@ -204,7 +205,7 @@ with col11:
 with col12:
     # Resultados a mostrar
     st.subheader(':orange-background[Resultados comparativa total factura]',divider='rainbow')
-    st.markdown(f':blue-background[Incluye todos los términos excepto alquiler de medida]')
+    st.markdown(f':blue-background[Incluye todos los términos excepto alquiler de medida. Sección **Alfonso Zárate Conde**]')
 
     col4,col5,col6=st.columns(3)
     with col4:

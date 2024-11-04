@@ -212,6 +212,7 @@ def grafico_horario_precio(pt_horario_filtrado):
     return grafico_horario_precio
 
 # %%
+#creamos una tabla resumen de: consumo, coste y precios medios
 def obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo):
     pt_periodos_filtrado=pd.pivot_table(
         df_datos_horarios_combo_filtrado_consumo,
@@ -224,7 +225,7 @@ def obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo):
             'precio':'mean'
         }
     )
-
+    print(pt_periodos_filtrado)
     totales_periodo=pt_periodos_filtrado[['consumo','coste']].sum()
 
     pt_periodos_filtrado_porc=pt_periodos_filtrado[['consumo','coste']].div(totales_periodo)*100

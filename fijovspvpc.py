@@ -240,18 +240,29 @@ with col22:
 
 
 ##GRÁFICOS 2
-pt_periodos_filtrado, pt_periodos_filtrado_porc, totales_periodo=obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo)
-graf_consumos_queso=graf_consumos_queso(pt_periodos_filtrado_porc)
-graf_costes_queso=graf_costes_queso(pt_periodos_filtrado_porc)
+#st.write(df_datos_horarios_combo_filtrado_consumo)
+try:
+    pt_periodos_filtrado, pt_periodos_filtrado_porc, totales_periodo=obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo)
+    graf_consumos_queso=graf_consumos_queso(pt_periodos_filtrado_porc)
+    graf_costes_queso=graf_costes_queso(pt_periodos_filtrado_porc)
+    st.session_state['porcentajes_consumo']=pt_periodos_filtrado_porc['consumo']
+    error_periodos=False
+except:
+    error_periodos=True
+#graf_consumos_queso=graf_consumos_queso(pt_periodos_filtrado_porc)
+#graf_costes_queso=graf_costes_queso(pt_periodos_filtrado_porc)
 
 col30,col31,col32=st.columns(3)
 with col30:
     st.subheader('Distribución de consumos y costes en %',divider='gray')
-    col301,col302=st.columns(2)
-    with col301:
-        st.write(graf_consumos_queso)
-    with col302:
-        st.write(graf_costes_queso)
+    if error_periodos==False:
+        col301,col302=st.columns(2)
+        with col301:
+            st.write(graf_consumos_queso)
+        with col302:
+            st.write(graf_costes_queso)
+    else:
+        st.error('No se disponen de datos de periodos dh para el mes en curso.')
     
 #with col32:
 #    st.subheader('Provisional',divider='gray')
@@ -261,7 +272,7 @@ with col30:
 #    st.write(totales_periodo)
 
 #obtenemos tabla con los tres porcentajes de consumo. usado para obtener el precio fijo de 3P
-st.session_state['porcentajes_consumo']=pt_periodos_filtrado_porc['consumo']
+#st.session_state['porcentajes_consumo']=pt_periodos_filtrado_porc['consumo']
 #st.write(st.session_state['porcentajes_consumo'])
 
 #st.text(f'El margen aplicado al término de potencia es {margenpot} €/kW año')

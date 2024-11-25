@@ -263,7 +263,11 @@ with col30:
             st.write(graf_costes_queso)
     else:
         st.error('No se disponen de datos de periodos dh para el mes en curso.')
-    
+
+with col31:
+    st.subheader('Tablas resumen',divider='gray')
+    st.write(pt_periodos_filtrado)
+    st.write(totales_periodo)
 #with col32:
 #    st.subheader('Provisional',divider='gray')
     #st.write(grafico_precio)

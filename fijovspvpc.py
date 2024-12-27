@@ -33,9 +33,9 @@ st.title('Comparador de precios fijos vs new PVPC 2024')
 st.caption(f"Dedicado a **Fernando Sánchez Rey-Maeso** y a **Alfonso Zárate Conde** por sus contribuciones a la causa. Copyright by **Jose Vidal** :ok_hand:")
 url_apps = "https://powerappspy-josevidal.streamlit.app/"
 st.write("Visita mi mini-web de [PowerAPPs](%s) con un montón de utilidades." % url_apps)
-url_linkedin = "https://www.linkedin.com/posts/jfvidalsierra_powerapps-activity-7216715360010461184-YhHj?utm_source=share&utm_medium=member_desktop"
-st.write("Deja tus comentarios y propuestas en mi perfil de [Linkedin](%s)" % url_linkedin)
-
+#url_linkedin = "https://www.linkedin.com/posts/jfvidalsierra_powerapps-activity-7216715360010461184-YhHj?utm_source=share&utm_medium=member_desktop"
+#st.write("Deja tus comentarios y propuestas en mi perfil de [Linkedin](%s)" % url_linkedin)
+st.markdown("¡Sígueme en [Bluesky](https://bsky.app/profile/poweravenger.bsky.social)!")
 
 if 'porcentajes_consumo' in st.session_state:
     porcentajes_consumo=st.session_state['porcentajes_consumo']

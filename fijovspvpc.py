@@ -178,7 +178,7 @@ col10,col11,col12=st.columns(3)
 with col10:
 
     # Algunos datos de salida a mostrar
-    st.subheader('Datos resumen del periodo analizado',divider='gray')
+    st.subheader('Datos resumen de energía del periodo analizado',divider='gray')
     fecha_inicio_mostrar=fecha_inicio.strftime('%d.%m.%Y')
     fecha_fin_mostrar=fecha_fin.strftime('%d.%m.%Y')
     #st.write(f'Periodo seleccionado del {fecha_inicio_mostrar} al {fecha_fin_mostrar}') 
@@ -266,8 +266,11 @@ with col30:
 
 with col31:
     st.subheader('Tablas resumen',divider='gray')
-    st.write(pt_periodos_filtrado)
-    st.write(totales_periodo)
+    if error_periodos == False:
+        st.write(pt_periodos_filtrado)
+        st.write(totales_periodo)
+    else:
+        st.error('No se disponen de datos de periodos dh para el mes en curso.')
 #with col32:
 #    st.subheader('Provisional',divider='gray')
     #st.write(grafico_precio)

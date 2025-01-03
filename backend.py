@@ -77,24 +77,25 @@ def obtener_datos_horarios():
     valor_minimo_horario,valor_maximo_diario
 
     #PERFILES HORARIOS
-    df_perfil_20=pd.read_csv('perfiles_2024_20.csv',sep=';',index_col=0)
+    #df_perfil_20=pd.read_csv('perfiles_2024_20.csv',sep=';',index_col=0)
 
     #usar solo cuando abrimos el excel grande de PowerQuery
-    #df_perfiles_origen=pd.read_excel('perfiles_iniciales_de_consumo.xlsx')
-    #df_perfiles_origen
+    df_perfiles_origen=pd.read_excel('perfiles_iniciales_de_consumo.xlsx')
+    print(df_perfiles_origen)
     #creamos un dataframe solo con perfil 20
-    #df_perfil_td20_2024=df_perfiles_origen.iloc[:,:-3]
+    df_perfil_20=df_perfiles_origen.iloc[:,:-3]
     #filtramos por 2024
     #df_perfil_td20_2024=df_perfil_td20_2024[df_perfil_td20_2024['año']==2024]
     #renombramos
-    #df_perfil_td20_2024.rename(columns={'P2.0TD,0m,d,h':'perfil_20'},inplace=True)
+    df_perfil_20.rename(columns={'P2.0TD,0m,d,h':'perfil_20', 'Hora':'hora'}, inplace=True)
     #guardamos en csv
     #df_perfil_td20_2024.to_csv('perfiles_2024_20.csv',sep=';')
 
-    df_perfil_20=df_perfil_20.rename(columns={'Hora':'hora'})
+    #df_perfil_20=df_perfil_20.rename(columns={'Hora':'hora'})
     df_perfil_20=df_perfil_20.drop(['Mes','Día','año'],axis=1)
     df_perfil_20['hora']=df_perfil_20['hora'].astype(int)
     df_perfil_20['fecha']=pd.to_datetime(df_perfil_20['fecha'])
+    print (df_perfil_20)
 
     #PERIODOS
     #hacerlo para añadir periodos del excel original de PowerQuery

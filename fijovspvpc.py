@@ -49,7 +49,12 @@ if 'consumo_anual' not in st.session_state:
 
 if 'precio_ene' not in st.session_state:
     st.session_state.precio_ene = 12.0   #c€/kWh
-
+if "precio_fijo_p1" not in st.session_state:
+    st.session_state.precio_fijo_p1 = 12.0
+if "precio_fijo_p2" not in st.session_state:
+    st.session_state.precio_fijo_p2 = 12.0
+if "precio_fijo_p3" not in st.session_state:
+    st.session_state.precio_fijo_p3 = 12.0
 
 
 #obtenemos datos de backend
@@ -129,10 +134,21 @@ try:
     pt_periodos_filtrado, pt_periodos_filtrado_porc, totales_periodo = obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo)
     graf_consumos_queso=graf_consumos_queso(pt_periodos_filtrado_porc)
     graf_costes_queso=graf_costes_queso(pt_periodos_filtrado_porc)
-    st.session_state.porcentajes_consumo = pt_periodos_filtrado_porc['consumo'].tolist()
+    #st.session_state.porcentajes_consumo = pt_periodos_filtrado_porc['consumo'].tolist()
+    consumo_periodos = pt_periodos_filtrado['consumo'].tolist()
+    coste_periodos = pt_periodos_filtrado['coste'].tolist()
+    #precios_fijo  = [c / con if con != 0 else 0 for c, con in zip(coste_periodos, consumo_periodos)]
+    #print (precios_fijo)
+    #st.session_state.precio_ene = np.sum(np.multiply(st.session_state.porcentajes_consumo, precios_fijo))
     error_periodos=False
 except:
     error_periodos=True
+
+if 'porcentajes_consumo' not in st.session_state:
+    st.session_state.porcentajes_consumo = pt_periodos_filtrado_porc['consumo'].tolist()
+
+#precios_fijo = np.divide(st.session_state.precio_ene, st.session_state.porcentajes_consumo)
+
 
 print(f'error_periodo = {error_periodos}')
 #if 'porcentajes_consumo' in st.session_state:
@@ -161,32 +177,45 @@ with st.sidebar.form('form2'):
 col1, col2, col3 = st.columns([.3, .4, .4])
 with col1:
     st.header('Zona de interacción', divider = 'gray')
-    with st.form('form1'):
+    #with st.form('form1'):
+    with st.container(border=True):
         st.subheader('1. Introduce datos de potencia y consumo')
         st.slider('Potencias Contratadas P1, P3 (kW)', min_value = 1.0, max_value = 9.9, step = .1, key = 'pot_con')
         st.slider('Consumo :blue[ANUAL] estimado (kWh)',min_value = 500, max_value = 7000, step = 100, key = 'consumo_anual')
-        
+    with st.container(border=True):
         st.subheader('2.Introduce datos del contrato a precio fijo')
         st.slider('Precio ofertado: término de potencia (€/kW año)', min_value = tp_boe_2025, max_value = 60.0, step =.1, key = 'tp_fijo')
-        #precios_3p = st.toggle('Usar tres precios de energía')
+
+
+        st.toggle('Usar tres precios de energía', key = 'precios_3p')
+        zona_precios = st.empty()
         
-        if st.session_state.precios_3p:
-               
+        if not st.session_state.precios_3p:
+            zona_precios.slider('Precio ofertado: término de energía (c€/kWh)' ,min_value = 5.0, max_value = 30.0, step = .1, key = 'precio_ene')
+            #st.session_state.precio_fijo_p1 = st.session_state.precio_ene       
+        else:
+            #st.session_state.precio_fijo_p1 = st.session_state.precio_ene 
+            #st.session_state.precio_fijo_p2 = st.session_state.precio_ene
+            #st.session_state.precio_fijo_p3 = st.session_state.precio_ene
             col21, col22, col23 = st.columns(3)
             with col21:           
-                precio_fijo_p1 = st.number_input('Precio P1', value = 0.160, step = 0.001, format = '%0.3f') 
+                #precio_fijo_p1 = st.number_input('Precio P1', value = 0.160, step = 0.001, format = '%0.3f') 
+                st.number_input('Precio P1', step = 0.001, format = '%0.3f', key = 'precio_fijo_p1')  #value = 0.160,
             with col22:
-                precio_fijo_p2 = st.number_input('Precio P2' ,value = 0.130, step = 0.001, format = '%0.3f')
+                st.number_input('Precio P2', step = 0.001, format = '%0.3f', key = 'precio_fijo_p2') # ,value = 0.130
             with col23:
-                precio_fijo_p3 = st.number_input('Precio P3', value = 0.110, step = 0.001, format = '%0.3f')
+                st.number_input('Precio P3', step = 0.001, format = '%0.3f', key = 'precio_fijo_p3') #, value = 0.110
 
-            precios_fijo = [precio_fijo_p1, precio_fijo_p2, precio_fijo_p3]
-            
-            st.session_state.precio_ene = np.sum(np.multiply(st.session_state.porcentajes_consumo, precios_fijo)) #/100
-            st.write(f'El precio fijo medio es :red[{st.session_state.precio_ene:.2f}]c€/kWh')
-        else:
-            st.slider('Precio ofertado: término de energía (c€/kWh)' ,min_value = 5.0, max_value = 30.0, step = .1, key = 'precio_ene')
-    
+            precios_fijo = [st.session_state.precio_fijo_p1, st.session_state.precio_fijo_p2, st.session_state.precio_fijo_p3]
+            st.session_state.precio_ene = np.sum(np.multiply(st.session_state.porcentajes_consumo, precios_fijo))/100
+            #print(precio_ene)
+        
+        #if precio_ene != st.session_state.precio_ene:        
+        #    st.session_state.precio_ene = precio_ene
+        st.write(f'El precio fijo medio es :red[{st.session_state.precio_ene:.2f}]c€/kWh')
+        #else:
+        
+    with st.form(border=True, key = 'form_fechas'):
         st.subheader('3.Introduce datos del periodo a analizar')
         st.caption(f'El último registro PVPC disponible es del  :blue[{ultimo_registro_pvpc.strftime("%d.%m.%Y")}]. Número de dias registrados: :blue[{dias_registrados}]')
         #st.caption(f'Número de dias registrados 2024: :blue[{dias_registrados}]')
@@ -197,7 +226,8 @@ with col1:
             )
         st.form_submit_button('Actualizar cálculos')
 
-    st.toggle('Usar tres precios de energía', key='precios_3p')
+
+    
 
 with col2:
 
@@ -206,18 +236,18 @@ with col2:
     st.markdown(f':blue-background[Periodo seleccionado del {fecha_inicio.strftime("%d.%m.%Y")} al {fecha_fin.strftime("%d.%m.%Y")}]')
     
     col101, col102, col103 = st.columns(3)
+
     with col101:
         if consumo_periodo < 1000:
             consumo_periodo_formateado = f'{consumo_periodo:.0f}'
         else:
             consumo_periodo_formateado = f'{consumo_periodo/1000:0,.3f}'.replace(',', '.')
         st.metric('Consumo periodo (kWh)', consumo_periodo_formateado)
-        
          
     with col102:
-        #st.metric('Precio medio del PVPC (c€/kWh)',round(te_pvpc * 100, 2),help='Precio medio del PVPC perfilado en el periodo seleccionado (c€/kWh)')
         st.metric('Precio medio del PVPC (c€/kWh)', f"{te_pvpc * 100:,.2f}".replace('.', ','), help = 'Precio medio del PVPC perfilado en el periodo seleccionado (c€/kWh)')
         st.metric('Coste del Te PVPC(€)', f'{te_coste_pvpc:0,.2f}'.replace('.', ','))
+
     with col103:
         st.dataframe(pt_periodos_filtrado, hide_index=True, use_container_width=True)
     

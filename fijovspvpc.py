@@ -59,10 +59,11 @@ if 'fechas_periodo' not in st.session_state:
     fecha_delta_año = ultimo_registro_pvpc - relativedelta(years = 1) + timedelta(days = 1)
     st.session_state.fechas_periodo = (fecha_delta_año, ultimo_registro_pvpc)
 
+
 fecha_inicio, fecha_fin = st.session_state.fechas_periodo 
 fecha_inicio = pd.to_datetime(fecha_inicio)
 fecha_fin = pd.to_datetime(fecha_fin) 
-dias_periodo = (fecha_fin-fecha_inicio).days + 1
+dias_periodo = (fecha_fin - fecha_inicio).days + 1
 print('dias_periodo')
 print(dias_periodo)
 
@@ -138,6 +139,9 @@ print(f'error_periodo = {error_periodos}')
 #    porcentajes_consumo=st.session_state['porcentajes_consumo']
 
 
+if 'precios_3p' not in st.session_state:
+    st.session_state.precios_3p = False
+
 
 # BARRA LATERAL-----------------------------------------------------------------------------
 st.sidebar.header('Herramientas adicionales')
@@ -164,8 +168,10 @@ with col1:
         
         st.subheader('2.Introduce datos del contrato a precio fijo')
         st.slider('Precio ofertado: término de potencia (€/kW año)', min_value = tp_boe_2025, max_value = 60.0, step =.1, key = 'tp_fijo')
-        precios_3p = st.toggle('Usar tres precios de energía')
-        if precios_3p:
+        #precios_3p = st.toggle('Usar tres precios de energía')
+        
+        if st.session_state.precios_3p:
+               
             col21, col22, col23 = st.columns(3)
             with col21:           
                 precio_fijo_p1 = st.number_input('Precio P1', value = 0.160, step = 0.001, format = '%0.3f') 
@@ -175,7 +181,7 @@ with col1:
                 precio_fijo_p3 = st.number_input('Precio P3', value = 0.110, step = 0.001, format = '%0.3f')
 
             precios_fijo = [precio_fijo_p1, precio_fijo_p2, precio_fijo_p3]
-            #st.write(precios_fijos)
+            
             st.session_state.precio_ene = np.sum(np.multiply(st.session_state.porcentajes_consumo, precios_fijo)) #/100
             st.write(f'El precio fijo medio es :red[{st.session_state.precio_ene:.2f}]c€/kWh')
         else:
@@ -190,7 +196,9 @@ with col1:
             key = 'fechas_periodo',
             )
         st.form_submit_button('Actualizar cálculos')
-        
+
+    st.toggle('Usar tres precios de energía', key='precios_3p')
+
 with col2:
 
     # Algunos datos de salida a mostrar
@@ -244,6 +252,7 @@ with col2:
     
 
     st.subheader('Distribución de consumos y costes en %') #, divider = 'gray')
+    
     if error_periodos == False:
         col301, col302 = st.columns(2)
         with col301:
@@ -270,7 +279,7 @@ with col3:
     #st.subheader('Gráfico del PVPC medio horario perfilado', divider = 'gray')
     st.write(grafico_precio)
 
-    
+
         
 
  

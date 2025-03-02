@@ -129,7 +129,7 @@ try:
     pt_periodos_filtrado, pt_periodos_filtrado_porc, totales_periodo = obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo)
     graf_consumos_queso=graf_consumos_queso(pt_periodos_filtrado_porc)
     graf_costes_queso=graf_costes_queso(pt_periodos_filtrado_porc)
-    st.session_state.porcentajes_consumo = pt_periodos_filtrado_porc['consumo']
+    st.session_state.porcentajes_consumo = pt_periodos_filtrado_porc['consumo'].tolist()
     error_periodos=False
 except:
     error_periodos=True
@@ -141,7 +141,7 @@ print(f'error_periodo = {error_periodos}')
 
 if 'precios_3p' not in st.session_state:
     st.session_state.precios_3p = False
-    st.session_state.porcentajes_consumo = [None, None, None]
+    st.session_state.porcentajes_consumo = [0.0, 0.0, 0.0]
 
 # BARRA LATERAL-----------------------------------------------------------------------------
 st.sidebar.header('Herramientas adicionales')

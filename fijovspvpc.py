@@ -141,7 +141,7 @@ print(f'error_periodo = {error_periodos}')
 
 if 'precios_3p' not in st.session_state:
     st.session_state.precios_3p = False
-
+    st.session_state.porcentajes_consumo = [None, None, None]
 
 # BARRA LATERAL-----------------------------------------------------------------------------
 st.sidebar.header('Herramientas adicionales')

@@ -65,12 +65,8 @@ def obtener_datos_horarios():
     df_datos_horarios_pvpc = df_datos_horarios_pvpc.reset_index()
     df_datos_horarios_pvpc['fecha'] = pd.to_datetime(df_datos_horarios_pvpc['fecha'])
     
-    ultimo_registro_pvpc = df_datos_horarios_pvpc['fecha'].max()
-    primer_registro_pvpc = df_datos_horarios_pvpc['fecha'].min()
-    dias_registrados = (ultimo_registro_pvpc-primer_registro_pvpc).days + 1
-    valor_minimo_horario = df_datos_horarios_pvpc['value'].min()
-    valor_maximo_diario = df_datos_horarios_pvpc['value'].max()
-    valor_minimo_horario, valor_maximo_diario
+    
+    
 
     
     
@@ -103,6 +99,15 @@ def obtener_datos_horarios():
     suma_perfil = df_datos_horarios_combo['perfil_20'].sum()
     suma_pvpc_medio_perf = df_datos_horarios_combo['pvpc_perfilado'].sum()
     pvpc_medio_perf = suma_pvpc_medio_perf / suma_perfil
+
+    #ultimo_registro_pvpc = df_datos_horarios_pvpc['fecha'].max()
+    primer_registro_pvpc = df_datos_horarios_combo.loc[df_datos_horarios_combo['dh_3p'].notna(), 'fecha'].min()
+    ultimo_registro_pvpc = df_datos_horarios_combo.loc[df_datos_horarios_combo['dh_3p'].notna(), 'fecha'].max()
+    
+    dias_registrados = (ultimo_registro_pvpc - primer_registro_pvpc).days + 1
+    valor_minimo_horario = df_datos_horarios_pvpc['value'].min()
+    valor_maximo_diario = df_datos_horarios_pvpc['value'].max()
+    valor_minimo_horario, valor_maximo_diario
 
     print(df_datos_horarios_combo)
 

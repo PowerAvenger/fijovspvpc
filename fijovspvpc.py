@@ -125,17 +125,17 @@ grafico_coste=grafico_horario_coste(pt_horario_filtrado)
 grafico_precio=grafico_horario_precio(pt_horario_filtrado)
 
 try:
-    pt_periodos_filtrado, pt_periodos_filtrado_porc, totales_periodo=obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo)
+    pt_periodos_filtrado, pt_periodos_filtrado_porc, totales_periodo = obtener_datos_por_periodo(df_datos_horarios_combo_filtrado_consumo)
     graf_consumos_queso=graf_consumos_queso(pt_periodos_filtrado_porc)
     graf_costes_queso=graf_costes_queso(pt_periodos_filtrado_porc)
-    st.session_state['porcentajes_consumo']=pt_periodos_filtrado_porc['consumo']
+    st.session_state.porcentajes_consumo = pt_periodos_filtrado_porc['consumo']
     error_periodos=False
 except:
     error_periodos=True
 
-
-if 'porcentajes_consumo' in st.session_state:
-    porcentajes_consumo=st.session_state['porcentajes_consumo']
+print(f'error_periodo = {error_periodos}')
+#if 'porcentajes_consumo' in st.session_state:
+#    porcentajes_consumo=st.session_state['porcentajes_consumo']
 
 
 
@@ -176,7 +176,7 @@ with col1:
 
             precios_fijo = [precio_fijo_p1, precio_fijo_p2, precio_fijo_p3]
             #st.write(precios_fijos)
-            st.session_state.precio_ene = np.sum(np.multiply(porcentajes_consumo, precios_fijo)) #/100
+            st.session_state.precio_ene = np.sum(np.multiply(st.session_state.porcentajes_consumo, precios_fijo)) #/100
             st.write(f'El precio fijo medio es :red[{st.session_state.precio_ene:.2f}]c€/kWh')
         else:
             st.slider('Precio ofertado: término de energía (c€/kWh)' ,min_value = 5.0, max_value = 30.0, step = .1, key = 'precio_ene')

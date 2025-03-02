@@ -81,12 +81,13 @@ def obtener_datos_horarios():
 
     #PERIODOS
     #hacerlo para añadir periodos del excel original de PowerQuery
-    df_periodos = pd.read_excel('conversor periodos liquicomun.xlsx', index_col = 0)
+    #df_periodos = pd.read_excel('conversor periodos liquicomun.xlsx', index_col = 0)
+    df_periodos = pd.read_excel('periodos_horarios.xlsx', index_col = 0, parse_dates=['fecha'])
     #df_periodos_2024_3p = df_periodos[df_periodos['año']==2024]
     df_periodos_3p = df_periodos.drop(['dh_6p'], axis = 1).reset_index()
     df_periodos_3p['hora'] += 1
     df_periodos_3p = df_periodos_3p.drop(['mes', 'dia', 'año'], axis = 1)
-    df_periodos_3p['fecha'] = pd.to_datetime(df_periodos_3p['fecha'])
+    df_periodos_3p['fecha'] = pd.to_datetime(df_periodos_3p['fecha'], dayfirst=True)
     df_periodos_3p['hora'] = df_periodos_3p['hora'].astype(int)
     
     df_datos_horarios_combo = df_datos_horarios_pvpc.merge(df_periodos_3p, on = ['fecha', 'hora'], how = 'left')
